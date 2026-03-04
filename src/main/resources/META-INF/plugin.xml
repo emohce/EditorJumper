@@ -41,6 +41,7 @@
             <li>Tools menu - select "Open in [Editor Name]" (name updates based on selected editor)</li>
             <li>Keyboard shortcut - use Alt+Shift+O / Option+Shift+O (macOS)</li>
             <li>Ultra-fast jump - use Alt+Shift+P / Option+Shift+P (all platforms supported)</li>
+            <li>Per-editor shortcuts - bind actions like <code>EditorJumper.OpenInCursor</code> or <code>EditorJumper.FastOpenInVscode</code> in Keymap for direct jumps</li>
         </ul>
         <p>Keyboard Shortcuts Comparison:</p>
         <table border="1" style="border-collapse: collapse; width: 100%;">
@@ -139,6 +140,7 @@
             <li>工具菜单 - 选择"在 [编辑器名称] 中打开"（名称会根据选择的编辑器更新）</li>
             <li>快捷键 - 使用 Alt+Shift+O / Option+Shift+O</li>
             <li>极速跳转 - 使用 Alt+Shift+P / Option+Shift+P</li>
+            <li>按编辑器快捷键 - 在 Keymap 中为 <code>EditorJumper.OpenInCursor</code> 或 <code>EditorJumper.FastOpenInVscode</code> 等动作单独绑定快捷键，实现一键跳转到指定编辑器</li>
         </ul>
         <p>快捷键对比说明：</p>
         <table border="1" style="border-collapse: collapse; width: 100%;">
@@ -256,6 +258,9 @@
     <ul>
         <li>fix path error</li>
     </ul>
+    <ul>
+        <li>Add per-editor actions (e.g. EditorJumper.OpenInCursor, EditorJumper.FastOpenInVscode) so you can bind different shortcuts to different target editors.</li>
+    </ul>
     <h3>1.6.1</h3>
     <ul>
         <li>fix add path quoting for spaces in file paths</li>
@@ -266,6 +271,9 @@
         <li>修复文件路径包含空格时的引号处理问题</li>
         <li>添加命令日志</li>
         <li>修复 Trae 路径问题</li>
+    </ul>
+    <ul>
+        <li>新增按编辑器划分的跳转动作（例如 EditorJumper.OpenInCursor、EditorJumper.FastOpenInVscode），可以在 Keymap 中为不同目标编辑器配置不同的快捷键。</li>
     </ul>
     <h3>1.6.0</h3>
     <ul>
