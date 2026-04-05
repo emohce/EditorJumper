@@ -1,0 +1,49 @@
+{
+    "root": {
+        "uuid": "root",
+        "name": "CodeMarks",
+        "createdAt": 1770346600953,
+        "modifiedAt": 1770346600953,
+        "children": [
+            {
+                "type": "group",
+                "uuid": "95be254d-4b70-46df-b5a5-542bcfde1230",
+                "name": "test",
+                "createdAt": 1770346954841,
+                "modifiedAt": 1770346954841,
+                "children": [
+                    {
+                        "type": "bookmark",
+                        "uuid": "638364ff-8224-4ac1-8a92-e9de230fb590",
+                        "name": "2",
+                        "createdAt": 1770347170680,
+                        "modifiedAt": 1770347170680,
+                        "filePath": "src/main/kotlin/com/github/wanniwa/editorjumper/actions/BaseAction.kt",
+                        "line": 40,
+                        "column": 17
+                    },
+                    {
+                        "type": "bookmark",
+                        "uuid": "50439265-254f-4a98-8138-e84e18f0a86c",
+                        "name": "2.1",
+                        "createdAt": 1770468054108,
+                        "modifiedAt": 1770468054108,
+                        "filePath": "src/main/kotlin/com/github/wanniwa/editorjumper/actions/FastOpenInExternalEditorAction.kt",
+                        "line": 22,
+                        "column": 19
+                    },
+                    {
+                        "type": "bookmark",
+                        "uuid": "b5a75a35-563a-435e-a4ad-2429359faefe",
+                        "name": "3",
+                        "createdAt": 1770347176000,
+                        "modifiedAt": 1770347176000,
+                        "filePath": "src/main/kotlin/com/github/wanniwa/editorjumper/actions/BaseAction.kt",
+                        "line": 43,
+                        "column": 21
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "root": {
+        "uuid": "root",
+        "name": "CodeMarks",
+        "createdAt": 1770346600953,
+        "modifiedAt": 1770346600953,
+        "children": [
+            {
+                "type": "group",
+                "uuid": "95be254d-4b70-46df-b5a5-542bcfde1230",
+                "name": "test",
+                "createdAt": 1770346954841,
+                "modifiedAt": 1770346954841,
+                "children": [
+                    {
+                        "type": "bookmark",
+                        "uuid": "0e22b14c-5676-4189-9a81-0ef432bb6f3d",
+                        "name": "1231",
+                        "createdAt": 1770689336974,
+                        "modifiedAt": 1770689336974,
+                        "filePath": "src/main/kotlin/com/github/wanniwa/editorjumper/actions/BaseAction.kt",
+                        "line": 33,
+                        "column": 15
+                    }
+                ]
+            }
+        ]
+    }
+}
