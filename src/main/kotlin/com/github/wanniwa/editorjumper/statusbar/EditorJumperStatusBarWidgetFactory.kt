@@ -10,7 +10,7 @@ import com.intellij.openapi.wm.StatusBarWidgetFactory
 class EditorJumperStatusBarWidgetFactory : StatusBarWidgetFactory, Disposable {
     override fun getId(): String = "EditorJumperWidget"
 
-    override fun getDisplayName(): String = "Editor Jumper"
+    override fun getDisplayName(): String = "Ez-Editor Jumper"
 
     override fun isAvailable(project: Project): Boolean = true
 
