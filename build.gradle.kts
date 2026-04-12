@@ -28,6 +28,13 @@ intellij {
 }
 
 tasks {
+    withType<JavaExec> {
+        if (name == "runIde") {
+            // Disable Android plugin to avoid SDK download issues
+            jvmArgs("-Didea.ignore.disabled.plugins=true")
+        }
+    }
+
     // Set the JVM compatibility versions
     withType<JavaCompile> {
         sourceCompatibility = "17"
