@@ -11,7 +11,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
 /**
- * Shortcut Slot 3 Action (Alt+Shift+B)
+ * Shortcut Slot 3 Action (Alt+Shift+U)
  * Opens project in the editor configured for shortcut slot 3
  */
 class ShortcutSlot3Action : BaseAction() {

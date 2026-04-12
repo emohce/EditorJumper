@@ -27,7 +27,7 @@ class EditorJumperSettings : PersistentStateComponent<EditorJumperSettings> {
     // Shortcut editor slots for global shortcuts
     var shortcutSlot1: String = "Cursor"  // Alt+Shift+O
     var shortcutSlot2: String = "Visual Studio Code"  // Alt+Shift+I
-    var shortcutSlot3: String = "Windsurf"  // Alt+Shift+B
+    var shortcutSlot3: String = "Windsurf"  // Alt+Shift+U
 
     // ---------------------------------------------------------------------------
     // Legacy fields kept solely for one-time migration of existing user settings.
