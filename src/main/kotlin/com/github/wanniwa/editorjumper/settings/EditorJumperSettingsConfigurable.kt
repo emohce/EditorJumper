@@ -35,6 +35,17 @@ class EditorJumperSettingsConfigurable : Configurable, WithEpDependencies {
             return true
         }
 
+        // Shortcut slots是否修改
+        if (component.getShortcutSlot1() != settings.shortcutSlot1) {
+            return true
+        }
+        if (component.getShortcutSlot2() != settings.shortcutSlot2) {
+            return true
+        }
+        if (component.getShortcutSlot3() != settings.shortcutSlot3) {
+            return true
+        }
+
         // 路径是否修改
         if (EditorRegistry.editors.any { editor ->
                 component.getPath(editor.name) != settings.getPath(editor.name)
@@ -70,6 +81,9 @@ class EditorJumperSettingsConfigurable : Configurable, WithEpDependencies {
         val hidden = allNames.filterNot { selectedVisible.contains(it) }.toMutableSet()
         settings.hiddenEditors = LinkedHashSet(hidden)
         settings.selectedEditorType = component.getDefaultEditorType()
+        settings.shortcutSlot1 = component.getShortcutSlot1()
+        settings.shortcutSlot2 = component.getShortcutSlot2()
+        settings.shortcutSlot3 = component.getShortcutSlot3()
         val newEditorType = component.getSelectedEditorType()
 
         val currentProject = getCurrentProject()
@@ -99,6 +113,9 @@ class EditorJumperSettingsConfigurable : Configurable, WithEpDependencies {
         val currentEditorType = getCurrentEditorType(settings, getCurrentProject())
         component.setDefaultEditorType(settings.selectedEditorType)
         component.setSelectedEditorType(currentEditorType)
+        component.setShortcutSlot1(settings.shortcutSlot1)
+        component.setShortcutSlot2(settings.shortcutSlot2)
+        component.setShortcutSlot3(settings.shortcutSlot3)
     }
 
     private fun getCurrentProject(): Project? =

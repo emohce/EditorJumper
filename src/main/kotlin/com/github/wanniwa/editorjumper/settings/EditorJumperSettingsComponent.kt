@@ -24,6 +24,11 @@ class EditorJumperSettingsComponent {
     private val editorTypeComboBox = ComboBox<String>()
     private val editorNameLabels: MutableMap<String, JBLabel> = mutableMapOf()
 
+    // Shortcut slot combo boxes
+    private val shortcutSlot1ComboBox = ComboBox<String>()
+    private val shortcutSlot2ComboBox = ComboBox<String>()
+    private val shortcutSlot3ComboBox = ComboBox<String>()
+
     private val pathFields: Map<String, TextFieldWithBrowseButton> =
         EditorRegistry.editors.associate { editor ->
             val field = TextFieldWithBrowseButton()
@@ -47,11 +52,15 @@ class EditorJumperSettingsComponent {
 
     init {
         editorTypeComboBox.model = DefaultComboBoxModel(EditorRegistry.editorNames.toTypedArray())
+        shortcutSlot1ComboBox.model = DefaultComboBoxModel(EditorRegistry.editorNames.toTypedArray())
+        shortcutSlot2ComboBox.model = DefaultComboBoxModel(EditorRegistry.editorNames.toTypedArray())
+        shortcutSlot3ComboBox.model = DefaultComboBoxModel(EditorRegistry.editorNames.toTypedArray())
 
         val macHintLabel = JBLabel("<html><em>${I18nUtils.message("settings.hint.macOS")}</em></html>")
         val windowsHintLabel = JBLabel("<html><em>${I18nUtils.message("settings.hint.windows")}</em></html>")
         val exampleLabel = JBLabel("<html><em>${I18nUtils.message("settings.hint.example")}</em></html>")
         val defaultEditorHintLabel = JBLabel("<html><em>${I18nUtils.message("settings.hint.defaultEditor")}</em></html>")
+        val shortcutSlotsHintLabel = JBLabel("<html><em>${I18nUtils.message("settings.hint.shortcutSlots")}</em></html>")
 
         val formBuilder = FormBuilder.createFormBuilder()
             .addComponent(macHintLabel)
@@ -60,6 +69,11 @@ class EditorJumperSettingsComponent {
             .addSeparator()
             .addComponent(defaultEditorHintLabel)
             .addLabeledComponent(JBLabel(I18nUtils.message("settings.defaultEditor.label")), editorTypeComboBox, 1, false)
+            .addSeparator()
+            .addComponent(shortcutSlotsHintLabel)
+            .addLabeledComponent(JBLabel(I18nUtils.message("settings.shortcutSlot1.label")), shortcutSlot1ComboBox, 1, false)
+            .addLabeledComponent(JBLabel(I18nUtils.message("settings.shortcutSlot2.label")), shortcutSlot2ComboBox, 1, false)
+            .addLabeledComponent(JBLabel(I18nUtils.message("settings.shortcutSlot3.label")), shortcutSlot3ComboBox, 1, false)
             .addSeparator()
 
         // Editors table: Editor | Path | Hidden
@@ -169,6 +183,21 @@ class EditorJumperSettingsComponent {
             button.isEnabled = true
             button.isSelected = name == target
         }
+    }
+
+    fun getShortcutSlot1(): String = shortcutSlot1ComboBox.selectedItem as String
+    fun setShortcutSlot1(editorType: String) {
+        shortcutSlot1ComboBox.selectedItem = editorType
+    }
+
+    fun getShortcutSlot2(): String = shortcutSlot2ComboBox.selectedItem as String
+    fun setShortcutSlot2(editorType: String) {
+        shortcutSlot2ComboBox.selectedItem = editorType
+    }
+
+    fun getShortcutSlot3(): String = shortcutSlot3ComboBox.selectedItem as String
+    fun setShortcutSlot3(editorType: String) {
+        shortcutSlot3ComboBox.selectedItem = editorType
     }
 
     private fun updateEditorNameStyle(editorName: String) {

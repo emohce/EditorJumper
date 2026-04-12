@@ -218,11 +218,22 @@
         >
             <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="alt shift O"/>
         </action>
         <action id="EditorJumper.OpenInExternalEditorUrlAction"
                 class="com.github.wanniwa.editorjumper.actions.FastOpenInExternalEditorAction">
             <keyboard-shortcut keymap="$default" first-keystroke="alt shift p"/>
+        </action>
+        <action id="EditorJumper.ShortcutSlot1Action"
+                class="com.github.wanniwa.editorjumper.actions.ShortcutSlot1Action">
+            <keyboard-shortcut keymap="$default" first-keystroke="alt shift O"/>
+        </action>
+        <action id="EditorJumper.ShortcutSlot2Action"
+                class="com.github.wanniwa.editorjumper.actions.ShortcutSlot2Action">
+            <keyboard-shortcut keymap="$default" first-keystroke="alt shift I"/>
+        </action>
+        <action id="EditorJumper.ShortcutSlot3Action"
+                class="com.github.wanniwa.editorjumper.actions.ShortcutSlot3Action">
+            <keyboard-shortcut keymap="$default" first-keystroke="alt shift B"/>
         </action>
     </actions>
 
