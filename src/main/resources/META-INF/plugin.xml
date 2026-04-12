@@ -1,22 +1,19 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin require-restart="true">
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
-    <id>com.github.wanniwa.EditorJumper</id>
+    <id>com.github.emohce.EditorJumper</id>
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
-    <name>EditorJumper</name>
-
-    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor email="734933034@qq.com" url="https://github.com/wanniwa">wanniwa</vendor>
+    <name>Ez-EditorJumper</name>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
         <h3>2.0.1</h3>
-        <p>EditorJumper</p>
-        <p>EditorJumper is a plugin that enables seamless switching between different editors, automatically opening the same project and file while preserving cursor position. This allows for instant context-aware transitions between editors:</p>
+        <p>Ez-EditorJumper</p>
+        <p>Ez-EditorJumper is a plugin that enables seamless switching between different editors, automatically opening the same project and file while preserving cursor position. This allows for instant context-aware transitions between editors:</p>
         <ul>
             <li>Jump from JetBrains IDE to VSCode</li>
             <li>Jump from JetBrains IDE to Trae|Trae CN</li>
@@ -41,6 +38,7 @@
             <li>Tools menu - select "Open in [Editor Name]" (name updates based on selected editor)</li>
             <li>Keyboard shortcut - use Alt+Shift+O / Option+Shift+O (macOS)</li>
             <li>Ultra-fast jump - use Alt+Shift+P / Option+Shift+P (all platforms supported)</li>
+            <li>Per-editor shortcuts - bind actions like <code>EditorJumper.OpenInCursor</code> or <code>EditorJumper.FastOpenInVscode</code> in Keymap for direct jumps</li>
         </ul>
         <p>Keyboard Shortcuts Comparison:</p>
         <table border="1" style="border-collapse: collapse; width: 100%;">
@@ -105,16 +103,16 @@
         <ul>
             <li>Works with any JetBrains IDE (IntelliJ IDEA, WebStorm, PyCharm, etc.)</li>
             <li>Requires IDE version 2023 or newer</li>
-        </ul>
+        </ul
         <p>Recommended Plugin:</p>
         <ul>
-            <li>Recommended to use with <a href="https://github.com/wanniwa/EditorJumper-V">EditorJumper-V</a> for quick return to JetBrains IDE from other editors</li>
+            <li>Recommended to use with <a href="https://github.com/emohce/EditorJumper-V">EditorJumper-V</a> for quick return to JetBrains IDE from other editors</li>
         </ul>
 
         <hr/>
         
         <h3>中文说明</h3>
-        <p>EditorJumper 是一个能够在不同编辑器之间无缝切换的插件，自动打开相同的项目和文件，同时保持光标位置。这使得在编辑器之间的上下文感知转换变得即时且高效：</p>
+        <p>Ez-EditorJumper 是一个能够在不同编辑器之间无缝切换的插件，自动打开相同的项目和文件，同时保持光标位置。这使得在编辑器之间的上下文感知转换变得即时且高效：</p>
         <ul>
             <li>从 JetBrains IDE 跳转到 VSCode</li>
             <li>从 JetBrains IDE 跳转到 Trae|Trae CN</li>
@@ -139,6 +137,7 @@
             <li>工具菜单 - 选择"在 [编辑器名称] 中打开"（名称会根据选择的编辑器更新）</li>
             <li>快捷键 - 使用 Alt+Shift+O / Option+Shift+O</li>
             <li>极速跳转 - 使用 Alt+Shift+P / Option+Shift+P</li>
+            <li>按编辑器快捷键 - 在 Keymap 中为 <code>EditorJumper.OpenInCursor</code> 或 <code>EditorJumper.FastOpenInVscode</code> 等动作单独绑定快捷键，实现一键跳转到指定编辑器</li>
         </ul>
         <p>快捷键对比说明：</p>
         <table border="1" style="border-collapse: collapse; width: 100%;">
@@ -185,7 +184,7 @@
         </ul>
         <p>推荐插件：</p>
         <ul>
-            <li>建议与 <a href="https://github.com/wanniwa/EditorJumper-V">EditorJumper-V</a> 配合使用，以便从其他编辑器快速返回 JetBrains IDE</li>
+            <li>建议与 <a href="https://github.com/emohce/EditorJumper-V">EditorJumper-V</a> 配合使用，以便从其他编辑器快速返回 JetBrains IDE</li>
         </ul>
         ]]>
     </description>
@@ -197,30 +196,30 @@
     <!-- Extension points declared by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.wanniwa.editorjumper.settings.EditorJumperSettings"/>
+        <applicationService serviceImplementation="com.github.emohce.editorjumper.settings.EditorJumperSettings"/>
         <applicationConfigurable parentId="tools"
-                                 instance="com.github.wanniwa.editorjumper.settings.EditorJumperSettingsConfigurable"
-                                 id="com.github.wanniwa.editorjumper.settings.EditorJumperSettingsConfigurable"
-                                 displayName="EditorJumper"/>
-        <projectConfigurable parentId="com.github.wanniwa.editorjumper.settings.EditorJumperSettingsConfigurable"
-                             instance="com.github.wanniwa.editorjumper.settings.EditorJumperProjectSettingsConfigurable"
-                             id="com.github.wanniwa.editorjumper.settings.EditorJumperProjectSettingsConfigurable"
+                                 instance="com.github.emohce.editorjumper.settings.EditorJumperSettingsConfigurable"
+                                 id="com.github.emohce.editorjumper.settings.EditorJumperSettingsConfigurable"
+                                 displayName="Ez-EditorJumper"/>
+        <projectConfigurable parentId="com.github.emohce.editorjumper.settings.EditorJumperSettingsConfigurable"
+                             instance="com.github.emohce.editorjumper.settings.EditorJumperProjectSettingsConfigurable"
+                             id="com.github.emohce.editorjumper.settings.EditorJumperProjectSettingsConfigurable"
                              displayName="ProjectSettings"/>
         <statusBarWidgetFactory
-                implementation="com.github.wanniwa.editorjumper.statusbar.EditorJumperStatusBarWidgetFactory"
+                implementation="com.github.emohce.editorjumper.statusbar.EditorJumperStatusBarWidgetFactory"
                 id="EditorJumper.StatusBarWidgetFactory"/>
         <notificationGroup id="EditorJumper Notifications" displayType="BALLOON" isLogByDefault="true"/>
-        <postStartupActivity implementation="com.github.wanniwa.editorjumper.startup.EditorJumperStartupActivity"/>
+        <postStartupActivity implementation="com.github.emohce.editorjumper.startup.EditorJumperStartupActivity"/>
     </extensions>
     <actions>
         <action id="EditorJumper.OpenInExternalEditor"
-                class="com.github.wanniwa.editorjumper.actions.OpenInExternalEditorAction"
+                class="com.github.emohce.editorjumper.actions.OpenInExternalEditorAction"
         >
             <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>
         <action id="EditorJumper.OpenInExternalEditorUrlAction"
-                class="com.github.wanniwa.editorjumper.actions.FastOpenInExternalEditorAction">
+                class="com.github.emohce.editorjumper.actions.FastOpenInExternalEditorAction">
             <keyboard-shortcut keymap="$default" first-keystroke="alt shift p"/>
         </action>
         <action id="EditorJumper.ShortcutSlot1Action"
@@ -267,6 +266,9 @@
     <ul>
         <li>fix path error</li>
     </ul>
+    <ul>
+        <li>Add per-editor actions (e.g. EditorJumper.OpenInCursor, EditorJumper.FastOpenInVscode) so you can bind different shortcuts to different target editors.</li>
+    </ul>
     <h3>1.6.1</h3>
     <ul>
         <li>fix add path quoting for spaces in file paths</li>
@@ -277,6 +279,9 @@
         <li>修复文件路径包含空格时的引号处理问题</li>
         <li>添加命令日志</li>
         <li>修复 Trae 路径问题</li>
+    </ul>
+    <ul>
+        <li>新增按编辑器划分的跳转动作（例如 EditorJumper.OpenInCursor、EditorJumper.FastOpenInVscode），可以在 Keymap 中为不同目标编辑器配置不同的快捷键。</li>
     </ul>
     <h3>1.6.0</h3>
     <ul>

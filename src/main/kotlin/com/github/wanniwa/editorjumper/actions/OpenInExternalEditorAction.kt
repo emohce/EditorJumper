@@ -15,7 +15,7 @@ import java.io.IOException
 /**
  * 在外部编辑器中打开文件或文件夹的动作
  */
-class OpenInExternalEditorAction : BaseAction() {
+open class OpenInExternalEditorAction : BaseAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return

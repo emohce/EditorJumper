@@ -14,7 +14,7 @@ import com.intellij.openapi.vfs.VirtualFile
  * Action for opening files in external editor using Mac URL scheme
  * Triggered by Option+Shift+P shortcut on Mac systems
  */
-class FastOpenInExternalEditorAction : BaseAction() {
+open class FastOpenInExternalEditorAction : BaseAction() {
 
     private val logger = Logger.getInstance(FastOpenInExternalEditorAction::class.java)
 

@@ -27,6 +27,8 @@ abstract class BaseAction : AnAction() {
 
     /**
      * 获取项目路径
+     *
+     *
      */
     protected open fun getProjectPath(project: Project): String? {
         return project.basePath
@@ -46,8 +48,15 @@ abstract class BaseAction : AnAction() {
      * 获取编辑器处理器
      */
     protected open fun getEditorHandler(project: Project): EditorHandler {
-        val editorType = EditorTargetUtils.getTargetEditor(project)
+        val editorType = getTargetEditor(project)
         return EditorHandlerFactory.getHandler(editorType, project)
+    }
+
+    /**
+     * 获取目标编辑器类型，子类可以覆盖此方法以提供不同的编辑器选择逻辑
+     */
+    protected open fun getTargetEditor(project: Project): String {
+        return EditorTargetUtils.getTargetEditor(project)
     }
 
     /**
@@ -57,7 +66,7 @@ abstract class BaseAction : AnAction() {
     protected fun checkEditorPathExists(project: Project, handler: EditorHandler): Boolean {
         val settings = EditorJumperSettings.getInstance()
         // 获取目标编辑器类型，如果为空则使用默认设置
-        val targetEditor = EditorTargetUtils.getTargetEditor(project)
+        val targetEditor = getTargetEditor(project)
         val editorType = targetEditor.ifBlank { settings.selectedEditorType }
         val customPath = settings.getPath(editorType)
 
