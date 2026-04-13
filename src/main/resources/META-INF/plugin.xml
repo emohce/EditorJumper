@@ -196,30 +196,30 @@
     <!-- Extension points declared by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.emohce.editorjumper.settings.EditorJumperSettings"/>
+        <applicationService serviceImplementation="com.github.wanniwa.editorjumper.settings.EditorJumperSettings"/>
         <applicationConfigurable parentId="tools"
-                                 instance="com.github.emohce.editorjumper.settings.EditorJumperSettingsConfigurable"
-                                 id="com.github.emohce.editorjumper.settings.EditorJumperSettingsConfigurable"
+                                 instance="com.github.wanniwa.editorjumper.settings.EditorJumperSettingsConfigurable"
+                                 id="com.github.wanniwa.editorjumper.settings.EditorJumperSettingsConfigurable"
                                  displayName="Ez-EditorJumper"/>
-        <projectConfigurable parentId="com.github.emohce.editorjumper.settings.EditorJumperSettingsConfigurable"
-                             instance="com.github.emohce.editorjumper.settings.EditorJumperProjectSettingsConfigurable"
-                             id="com.github.emohce.editorjumper.settings.EditorJumperProjectSettingsConfigurable"
+        <projectConfigurable parentId="com.github.wanniwa.editorjumper.settings.EditorJumperSettingsConfigurable"
+                             instance="com.github.wanniwa.editorjumper.settings.EditorJumperProjectSettingsConfigurable"
+                             id="com.github.wanniwa.editorjumper.settings.EditorJumperProjectSettingsConfigurable"
                              displayName="ProjectSettings"/>
         <statusBarWidgetFactory
-                implementation="com.github.emohce.editorjumper.statusbar.EditorJumperStatusBarWidgetFactory"
+                implementation="com.github.wanniwa.editorjumper.statusbar.EditorJumperStatusBarWidgetFactory"
                 id="EditorJumper.StatusBarWidgetFactory"/>
         <notificationGroup id="EditorJumper Notifications" displayType="BALLOON" isLogByDefault="true"/>
-        <postStartupActivity implementation="com.github.emohce.editorjumper.startup.EditorJumperStartupActivity"/>
+        <postStartupActivity implementation="com.github.wanniwa.editorjumper.startup.EditorJumperStartupActivity"/>
     </extensions>
     <actions>
         <action id="EditorJumper.OpenInExternalEditor"
-                class="com.github.emohce.editorjumper.actions.OpenInExternalEditorAction"
+                class="com.github.wanniwa.editorjumper.actions.OpenInExternalEditorAction"
         >
             <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>
         <action id="EditorJumper.OpenInExternalEditorUrlAction"
-                class="com.github.emohce.editorjumper.actions.FastOpenInExternalEditorAction">
+                class="com.github.wanniwa.editorjumper.actions.FastOpenInExternalEditorAction">
             <keyboard-shortcut keymap="$default" first-keystroke="alt shift p"/>
         </action>
         <action id="EditorJumper.ShortcutSlot1Action"
