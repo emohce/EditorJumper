@@ -1,11 +1,11 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin require-restart="true">
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
-    <id>com.github.emohce.EditorJumper</id>
+    <id>com.github.emohce.EzEditorJumper</id>
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
-    <name>Ez-EditorJumper</name>
+    <name>EzEditorJumper</name>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
@@ -200,7 +200,7 @@
         <applicationConfigurable parentId="tools"
                                  instance="com.github.wanniwa.editorjumper.settings.EditorJumperSettingsConfigurable"
                                  id="com.github.wanniwa.editorjumper.settings.EditorJumperSettingsConfigurable"
-                                 displayName="Ez-EditorJumper"/>
+                                 displayName="EzEditorJumper"/>
         <projectConfigurable parentId="com.github.wanniwa.editorjumper.settings.EditorJumperSettingsConfigurable"
                              instance="com.github.wanniwa.editorjumper.settings.EditorJumperProjectSettingsConfigurable"
                              id="com.github.wanniwa.editorjumper.settings.EditorJumperProjectSettingsConfigurable"

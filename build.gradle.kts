@@ -63,4 +63,8 @@ tasks {
     publishPlugin {
         token.set(System.getenv("PUBLISH_TOKEN"))
     }
+
+    buildPlugin {
+        archiveFileName.set("Ez-EditorJumper-${version}.zip")
+    }
 }
