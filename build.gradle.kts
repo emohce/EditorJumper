@@ -65,6 +65,6 @@ tasks {
     }
 
     buildPlugin {
-        archiveFileName.set("Ez-EditorJumper-${version}.zip")
+        archiveFileName.set("EzEditorJumper-${version}.zip")
     }
 }
