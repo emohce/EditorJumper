@@ -1,12 +1,18 @@
 package com.github.wanniwa.editorjumper.statusbar
 
-import com.github.wanniwa.editorjumper.editors.EditorRegistry
-import com.github.wanniwa.editorjumper.settings.EditorJumperProjectSettings
-import com.github.wanniwa.editorjumper.settings.EditorJumperSettings
 import com.github.wanniwa.editorjumper.settings.EditorJumperSettingsConfigurable
 import com.github.wanniwa.editorjumper.utils.I18nUtils
+import com.github.wanniwa.editorjumper.utils.ProjectSlotUtils
+import com.github.wanniwa.editorjumper.utils.SettingsShortcutLabels
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.ShowSettingsUtil
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.Presentation
+import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.ListPopup
@@ -14,10 +20,6 @@ import com.intellij.openapi.ui.popup.PopupStep
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.wm.StatusBar
 import com.intellij.openapi.wm.StatusBarWidget
-import com.intellij.ui.awt.RelativePoint
-import com.intellij.util.Consumer
-import java.awt.Point
-import java.awt.event.MouseEvent
 
 class EditorJumperStatusBarWidget(private val project: Project) : StatusBarWidget,
     StatusBarWidget.MultipleTextValuesPresentation,
@@ -26,30 +28,18 @@ class EditorJumperStatusBarWidget(private val project: Project) : StatusBarWidge
         const val ID = "EditorJumperWidget"
     }
 
+    private sealed interface StatusBarPopupItem
+    private data class SlotPopupItem(val slot: Int, val shortcutLabel: String) : StatusBarPopupItem
+    private object SettingsPopupItem : StatusBarPopupItem
+
     private var statusBar: StatusBar? = null
-    private val supportedEditors: List<String>
-        get() {
-            val settings = EditorJumperSettings.getInstance()
-            val hidden = settings.hiddenEditors
-            val editors = if (hidden.isEmpty()) {
-                EditorRegistry.editorNames
-            } else {
-                EditorRegistry.editorNames.filterNot { hidden.contains(it) }
-            }
-            return editors + listOf(I18nUtils.message("editor.settings"))
-        }
 
     override fun ID(): String = ID
 
     override fun getTooltipText(): String = I18nUtils.message("statusbar.tooltip")
 
     override fun getSelectedValue(): String {
-        val projectSettings = EditorJumperProjectSettings.getInstance(project)
-        val editorType = if (projectSettings.projectEditorType.isBlank()) {
-            EditorJumperSettings.getInstance().selectedEditorType
-        } else {
-            projectSettings.projectEditorType
-        }
+        val editorType = ProjectSlotUtils.getSlotEditor(project, 1)
         return I18nUtils.message("statusbar.jumpTo", editorType)
     }
 
@@ -58,49 +48,70 @@ class EditorJumperStatusBarWidget(private val project: Project) : StatusBarWidge
     }
 
     override fun getPopup(): ListPopup {
-        val factory = JBPopupFactory.getInstance()
-        var selectedValue: String? = null
-
-        val step =
-            object : BaseListPopupStep<String>(I18nUtils.message("statusbar.popup.title"), supportedEditors.toList()) {
-                override fun onChosen(value: String, finalChoice: Boolean): PopupStep<*>? {
-                    selectedValue = value
-                    if (value == I18nUtils.message("editor.settings")) {
-                        return PopupStep.FINAL_CHOICE
-                    } else {
-                        // 只更新项目级设置
-                        val projectSettings = EditorJumperProjectSettings.getInstance(project)
-                        projectSettings.projectEditorType = value
-                        // 更新状态栏显示
-                        statusBar?.updateWidget(ID())
-                    }
-                    return PopupStep.FINAL_CHOICE
+        val items = listOf(
+            SlotPopupItem(1, "Alt+Shift+O"),
+            SlotPopupItem(2, "Alt+Shift+I"),
+            SlotPopupItem(3, "Alt+Shift+U"),
+            SettingsPopupItem,
+        )
+        var pendingChoice: StatusBarPopupItem? = null
+        val step = object : BaseListPopupStep<StatusBarPopupItem>(
+            I18nUtils.message("statusbar.popup.title"),
+            items,
+        ) {
+            override fun getTextFor(value: StatusBarPopupItem): String = when (value) {
+                is SlotPopupItem -> {
+                    val editor = ProjectSlotUtils.getSlotEditor(project, value.slot)
+                    I18nUtils.message("statusbar.slotItem", value.slot, value.shortcutLabel, editor)
                 }
-
-                override fun getFinalRunnable(): Runnable? {
-                    return if (selectedValue == I18nUtils.message("editor.settings")) {
-                        Runnable {
-                            ShowSettingsUtil.getInstance().showSettingsDialog(
-                                project,
-                                EditorJumperSettingsConfigurable::class.java
-                            )
-                        }
-                    } else null
-                }
+                SettingsPopupItem -> I18nUtils.message("statusbar.settingsItem", SettingsShortcutLabels.displayLabel())
             }
 
-        return factory.createListPopup(step)
+            override fun onChosen(value: StatusBarPopupItem, finalChoice: Boolean): PopupStep<*>? {
+                pendingChoice = value
+                return PopupStep.FINAL_CHOICE
+            }
+
+            override fun getFinalRunnable(): Runnable? {
+                val choice = pendingChoice ?: return null
+                pendingChoice = null
+                return Runnable {
+                    when (choice) {
+                        is SlotPopupItem -> triggerSlot(choice.slot)
+                        SettingsPopupItem -> openSettings()
+                    }
+                }
+            }
+        }
+        return JBPopupFactory.getInstance().createListPopup(step)
     }
 
-    override fun getClickConsumer(): Consumer<MouseEvent> = Consumer { event ->
-        val popup = getPopup()
-        val component = event.component
+    private fun openSettings() {
+        ShowSettingsUtil.getInstance().showSettingsDialog(
+            project,
+            EditorJumperSettingsConfigurable::class.java,
+        )
+    }
 
-        // 将弹出菜单显示在组件的正上方，并与组件左对齐
-        // 使用固定的偏移量，确保菜单贴合状态栏
-        val point = Point(0, 0)
-
-        popup.show(RelativePoint(component, point))
+    private fun triggerSlot(slot: Int) {
+        val action = when (slot) {
+            1 -> ActionManager.getInstance().getAction("EditorJumper.ShortcutSlot1Action")
+            2 -> ActionManager.getInstance().getAction("EditorJumper.ShortcutSlot2Action")
+            3 -> ActionManager.getInstance().getAction("EditorJumper.ShortcutSlot3Action")
+            else -> null
+        } as? AnAction ?: return
+        val dataContext = SimpleDataContext.builder()
+            .add(CommonDataKeys.PROJECT, project)
+            .build()
+        val anActionEvent = AnActionEvent(
+            null,
+            dataContext,
+            ActionPlaces.STATUS_BAR_PLACE,
+            Presentation(),
+            ActionManager.getInstance(),
+            0,
+        )
+        action.actionPerformed(anActionEvent)
     }
 
     override fun install(statusBar: StatusBar) {

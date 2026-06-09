@@ -79,6 +79,11 @@ abstract class BaseEditorHandler(private val customPath: String?) : EditorHandle
         return if (customPath.isNullOrEmpty()) getDefaultPath() else customPath
     }
 
+    protected fun usesCustomExecutable(): Boolean {
+        val path = getPath()
+        return path.isNotBlank() && path != getDefaultPath()
+    }
+
     override fun getOpenCommand(
         projectPath: String,
         filePath: String?,
@@ -104,12 +109,13 @@ abstract class BaseEditorHandler(private val customPath: String?) : EditorHandle
 
             else -> {
                 // 只打开项目
-                if (SystemInfo.isWindows && getPath() == getDefaultPath()) {
+                val quotedProjectPath = if (quote) "\"$projectPath\"" else projectPath
+                if (SystemInfo.isWindows && !usesCustomExecutable()) {
                     arrayOf("cmd", "/c", getPath(), projectPath)
-                } else if (SystemInfo.isMac) {
+                } else if (SystemInfo.isMac && !usesCustomExecutable()) {
                     arrayOf("open", "-a", macAppName, projectPath)
                 } else {
-                    arrayOf(getPath(), projectPath)
+                    arrayOf(getPath(), quotedProjectPath)
                 }
             }
         }
@@ -123,7 +129,7 @@ abstract class BaseEditorHandler(private val customPath: String?) : EditorHandle
     ): Array<String> {
         val macOpenName = getMacOpenName()
         val macAppName = getName()
-        if (SystemInfo.isWindows) {
+        if (SystemInfo.isWindows || usesCustomExecutable()) {
             return getOpenCommand(projectPath, filePath, lineNumber, columnNumber)
         }
         return when {

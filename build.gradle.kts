@@ -1,3 +1,5 @@
+import org.jetbrains.intellij.tasks.BuildSearchableOptionsTask
+
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.25"
@@ -5,7 +7,7 @@ plugins {
 }
 
 group = "github.emohce"
-version = "2.0.1"
+version = "2.0.2"
 
 repositories {
     mavenCentral()
@@ -14,6 +16,7 @@ repositories {
 dependencies {
     // Gson is bundled inside IntelliJ Platform; compileOnly avoids packaging a duplicate jar.
     compileOnly("com.google.code.gson:gson:2.10.1")
+    testImplementation("junit:junit:4.13.2")
 }
 
 // Configure Gradle IntelliJ Plugin
@@ -66,5 +69,16 @@ tasks {
 
     buildPlugin {
         archiveFileName.set("EzEditorJumper-${version}.zip")
+    }
+
+    named<BuildSearchableOptionsTask>("buildSearchableOptions") {
+        jvmArgs(
+            "-Didea.plugins.marketplace.enabled=false",
+            "-Djb.privacy.policy.opt-out=true",
+        )
+    }
+
+    test {
+        useJUnit()
     }
 }

@@ -1,5 +1,7 @@
 package com.github.wanniwa.editorjumper.settings
 
+import com.github.wanniwa.editorjumper.config.GlobalConfigStore
+import com.github.wanniwa.editorjumper.config.LegacyConfigMigration
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
@@ -43,22 +45,74 @@ class EditorJumperSettings : PersistentStateComponent<EditorJumperSettings> {
     var antigravityPath: String = ""
     var traeCN: Boolean = false
 
-    fun getPath(editorName: String): String = editorPaths[editorName] ?: ""
+    fun getPath(editorName: String): String {
+        return runCatching { globalStore().getPath(editorName) }
+            .getOrElse { editorPaths[editorName] ?: "" }
+    }
 
     fun setPath(editorName: String, path: String) {
         editorPaths[editorName] = path
+        runCatching { globalStore().setPath(editorName, path) }
     }
+
+    fun syncPathsToGlobalStore() {
+        editorPaths.forEach { (name, path) ->
+            runCatching { globalStore().setPath(name, path) }
+        }
+        if (hiddenEditors.isNotEmpty()) {
+            runCatching { globalStore().setHiddenEditors(hiddenEditors) }
+        }
+        runCatching {
+            globalStore().saveJumperExtras(shortcutSlot1, shortcutSlot2, shortcutSlot3, selectedEditorType)
+        }
+    }
+
+    fun applyLegacyFieldMigration() {
+        migrateLegacyFields()
+    }
+
+    fun hasLegacyPathFields(): Boolean =
+        vscodePath.isNotEmpty() ||
+            cursorPath.isNotEmpty() ||
+            traePath.isNotEmpty() ||
+            windsurfPath.isNotEmpty() ||
+            voidPath.isNotEmpty() ||
+            kiroPath.isNotEmpty() ||
+            qoderPath.isNotEmpty() ||
+            catPawAIPath.isNotEmpty() ||
+            antigravityPath.isNotEmpty()
+
+    private fun hydrateFromGlobalStore() {
+        runCatching {
+            val extras = globalStore().getJumperExtras()
+            selectedEditorType = extras.selectedEditorType
+            shortcutSlot1 = extras.shortcutSlot1
+            shortcutSlot2 = extras.shortcutSlot2
+            shortcutSlot3 = extras.shortcutSlot3
+        }
+    }
+
+    private fun globalStore(): GlobalConfigStore = GlobalConfigStore.getInstance()
 
     companion object {
         fun getInstance(): EditorJumperSettings =
             ApplicationManager.getApplication().getService(EditorJumperSettings::class.java)
     }
 
-    override fun getState(): EditorJumperSettings = this
+    override fun getState(): EditorJumperSettings =
+        EditorJumperSettings().apply { hasShownStatusBarGuide = this@EditorJumperSettings.hasShownStatusBarGuide }
 
     override fun loadState(state: EditorJumperSettings) {
-        XmlSerializerUtil.copyBean(state, this)
-        migrateLegacyFields()
+        hasShownStatusBarGuide = state.hasShownStatusBarGuide
+        val incoming = EditorJumperSettings()
+        XmlSerializerUtil.copyBean(state, incoming)
+        runCatching {
+            if (LegacyConfigMigration.hasLegacyGlobalPayload(incoming)) {
+                LegacyConfigMigration.importLegacyGlobalSettings(incoming)
+            }
+            globalStore().readApps(forceReload = true)
+        }
+        hydrateFromGlobalStore()
     }
 
     private fun migrateLegacyFields() {

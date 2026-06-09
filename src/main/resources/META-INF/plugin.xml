@@ -198,18 +198,16 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="com.github.wanniwa.editorjumper.settings.EditorJumperSettings"/>
+        <applicationService serviceImplementation="com.github.wanniwa.editorjumper.config.GlobalConfigStore"/>
         <applicationConfigurable parentId="tools"
                                  instance="com.github.wanniwa.editorjumper.settings.EditorJumperSettingsConfigurable"
                                  id="com.github.wanniwa.editorjumper.settings.EditorJumperSettingsConfigurable"
                                  displayName="EzEditorJumper"/>
-        <projectConfigurable parentId="com.github.wanniwa.editorjumper.settings.EditorJumperSettingsConfigurable"
-                             instance="com.github.wanniwa.editorjumper.settings.EditorJumperProjectSettingsConfigurable"
-                             id="com.github.wanniwa.editorjumper.settings.EditorJumperProjectSettingsConfigurable"
-                             displayName="ProjectSettings"/>
         <statusBarWidgetFactory
                 implementation="com.github.wanniwa.editorjumper.statusbar.EditorJumperStatusBarWidgetFactory"
                 id="EditorJumper.StatusBarWidgetFactory"/>
         <notificationGroup id="EditorJumper Notifications" displayType="BALLOON" isLogByDefault="true"/>
+        <projectService serviceImplementation="com.github.wanniwa.editorjumper.config.ProjectConfigStore"/>
         <postStartupActivity implementation="com.github.wanniwa.editorjumper.startup.EditorJumperStartupActivity"/>
     </extensions>
     <actions>
@@ -234,6 +232,12 @@
         <action id="EditorJumper.ShortcutSlot3Action"
                 class="com.github.wanniwa.editorjumper.actions.ShortcutSlot3Action">
             <keyboard-shortcut keymap="$default" first-keystroke="alt shift B"/>
+        </action>
+        <action id="EditorJumper.OpenSettingsAction"
+                class="com.github.wanniwa.editorjumper.actions.OpenEditorJumperSettingsAction">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt V"/>
+            <keyboard-shortcut keymap="Mac OS X" first-keystroke="meta shift alt V"/>
+            <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta shift alt V"/>
         </action>
     </actions>
 

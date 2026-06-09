@@ -1,20 +1,41 @@
 package com.github.wanniwa.editorjumper.settings
 
+import com.github.wanniwa.editorjumper.config.LegacyConfigMigration
+import com.github.wanniwa.editorjumper.config.ProjectConfigStore
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.project.Project
-import com.intellij.util.xmlb.XmlSerializerUtil
 
 @Service(Service.Level.PROJECT)
 @State(
     name = "com.github.wanniwa.editorjumper.settings.EditorJumperProjectSettings",
-    storages = [Storage("editorJumperProjectSettings.xml")]
+    storages = [Storage("editorJumperProjectSettings.xml", deprecated = true)]
 )
-class EditorJumperProjectSettings : PersistentStateComponent<EditorJumperProjectSettings> {
-    var vsCodeWorkspacePath: String = ""
-    var projectEditorType: String = "" // 删除默认值，完全继承全局设置
+class EditorJumperProjectSettings(private val project: Project) :
+    PersistentStateComponent<EditorJumperProjectSettingsState> {
+
+    private var vsCodeWorkspacePathField: String = ""
+    private var projectEditorTypeField: String = ""
+
+    var vsCodeWorkspacePath: String
+        get() = vsCodeWorkspacePathField.ifBlank {
+            runCatching { ProjectConfigStore.getInstance(project).getVsCodeWorkspacePath() }.getOrDefault("")
+        }
+        set(value) {
+            vsCodeWorkspacePathField = value
+            runCatching { ProjectConfigStore.getInstance(project).setVsCodeWorkspacePath(value) }
+        }
+
+    var projectEditorType: String
+        get() = projectEditorTypeField.ifBlank {
+            runCatching { ProjectConfigStore.getInstance(project).getProjectEditorType() }.getOrDefault("")
+        }
+        set(value) {
+            projectEditorTypeField = value
+            runCatching { ProjectConfigStore.getInstance(project).setProjectEditorType(value) }
+        }
 
     companion object {
         fun getInstance(project: Project): EditorJumperProjectSettings {
@@ -22,11 +43,22 @@ class EditorJumperProjectSettings : PersistentStateComponent<EditorJumperProject
         }
     }
 
-    override fun getState(): EditorJumperProjectSettings {
-        return this
-    }
+    override fun getState(): EditorJumperProjectSettingsState = EditorJumperProjectSettingsState()
 
-    override fun loadState(state: EditorJumperProjectSettings) {
-        XmlSerializerUtil.copyBean(state, this)
+    override fun loadState(state: EditorJumperProjectSettingsState) {
+        vsCodeWorkspacePathField = ""
+        projectEditorTypeField = ""
+        runCatching {
+            LegacyConfigMigration.importLegacyProjectSettings(
+                project,
+                state.vsCodeWorkspacePath,
+                state.projectEditorType,
+            )
+        }
     }
-} 
+}
+
+data class EditorJumperProjectSettingsState(
+    var vsCodeWorkspacePath: String = "",
+    var projectEditorType: String = "",
+)

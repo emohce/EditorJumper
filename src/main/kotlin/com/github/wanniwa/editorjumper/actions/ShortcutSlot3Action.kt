@@ -4,6 +4,7 @@ import com.github.wanniwa.editorjumper.editors.EditorHandler
 import com.github.wanniwa.editorjumper.editors.EditorHandlerFactory
 import com.github.wanniwa.editorjumper.settings.EditorJumperSettings
 import com.github.wanniwa.editorjumper.utils.I18nUtils
+import com.github.wanniwa.editorjumper.utils.ProjectSlotUtils
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -20,8 +21,7 @@ class ShortcutSlot3Action : BaseAction() {
         val project = e.project ?: return
 
         // Get editor handler for shortcut slot 3
-        val settings = EditorJumperSettings.getInstance()
-        val editorType = settings.shortcutSlot3
+        val editorType = ProjectSlotUtils.getSlotEditor(project, 3)
         val handler = EditorHandlerFactory.getHandler(editorType, project)
 
         // Check editor path exists
@@ -44,14 +44,12 @@ class ShortcutSlot3Action : BaseAction() {
         super.update(e)
 
         // Update menu item text to show the configured editor
-        val settings = EditorJumperSettings.getInstance()
-        val editorType = settings.shortcutSlot3
+        val editorType = ProjectSlotUtils.getSlotEditor(e.project, 3)
         e.presentation.text = I18nUtils.message("action.shortcutSlot3.text", editorType)
     }
 
     override fun getEditorHandler(project: Project): EditorHandler {
-        val settings = EditorJumperSettings.getInstance()
-        val editorType = settings.shortcutSlot3
+        val editorType = ProjectSlotUtils.getSlotEditor(project, 3)
         return EditorHandlerFactory.getHandler(editorType, project)
     }
 

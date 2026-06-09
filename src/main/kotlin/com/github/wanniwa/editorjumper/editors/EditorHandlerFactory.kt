@@ -7,9 +7,12 @@ class EditorHandlerFactory {
     companion object {
         fun getHandler(editorType: String, customPath: String, project: Project?): EditorHandler {
             val registration = EditorRegistry.find(editorType)
-                ?: EditorRegistry.editors.firstOrNull()
-                ?: error("editors.json is empty or missing")
-            return registration.create(customPath, project)
+            if (registration != null) {
+                return registration.create(customPath, project)
+            }
+            val path = customPath.ifBlank { EditorJumperSettings.getInstance().getPath(editorType) }
+            val cfg = EditorConfig(name = editorType, supportsWorkspace = true, quotePaths = true)
+            return ConfigBasedEditorHandler(cfg, path.takeIf { it.isNotBlank() }, project)
         }
 
         fun getHandler(editorType: String, project: Project?): EditorHandler {
