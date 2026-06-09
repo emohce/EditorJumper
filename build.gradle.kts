@@ -73,6 +73,7 @@ tasks {
 
     named<BuildSearchableOptionsTask>("buildSearchableOptions") {
         jvmArgs(
+            "-Dezeditorjumper.searchable.options.traverse=true",
             "-Didea.plugins.marketplace.enabled=false",
             "-Djb.privacy.policy.opt-out=true",
         )

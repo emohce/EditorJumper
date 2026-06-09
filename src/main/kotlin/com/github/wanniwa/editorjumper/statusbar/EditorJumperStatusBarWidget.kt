@@ -8,12 +8,9 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.actionSystem.Presentation
-import com.intellij.openapi.actionSystem.impl.SimpleDataContext
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.wm.WindowManager
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.ListPopup
 import com.intellij.openapi.ui.popup.PopupStep
@@ -54,7 +51,6 @@ class EditorJumperStatusBarWidget(private val project: Project) : StatusBarWidge
             SlotPopupItem(3, "Alt+Shift+U"),
             SettingsPopupItem,
         )
-        var pendingChoice: StatusBarPopupItem? = null
         val step = object : BaseListPopupStep<StatusBarPopupItem>(
             I18nUtils.message("statusbar.popup.title"),
             items,
@@ -68,19 +64,16 @@ class EditorJumperStatusBarWidget(private val project: Project) : StatusBarWidge
             }
 
             override fun onChosen(value: StatusBarPopupItem, finalChoice: Boolean): PopupStep<*>? {
-                pendingChoice = value
-                return PopupStep.FINAL_CHOICE
-            }
-
-            override fun getFinalRunnable(): Runnable? {
-                val choice = pendingChoice ?: return null
-                pendingChoice = null
-                return Runnable {
-                    when (choice) {
-                        is SlotPopupItem -> triggerSlot(choice.slot)
+                if (!finalChoice) {
+                    return this
+                }
+                ApplicationManager.getApplication().invokeLater {
+                    when (value) {
+                        is SlotPopupItem -> triggerSlot(value.slot)
                         SettingsPopupItem -> openSettings()
                     }
                 }
+                return PopupStep.FINAL_CHOICE
             }
         }
         return JBPopupFactory.getInstance().createListPopup(step)
@@ -94,24 +87,21 @@ class EditorJumperStatusBarWidget(private val project: Project) : StatusBarWidge
     }
 
     private fun triggerSlot(slot: Int) {
-        val action = when (slot) {
-            1 -> ActionManager.getInstance().getAction("EditorJumper.ShortcutSlot1Action")
-            2 -> ActionManager.getInstance().getAction("EditorJumper.ShortcutSlot2Action")
-            3 -> ActionManager.getInstance().getAction("EditorJumper.ShortcutSlot3Action")
-            else -> null
-        } as? AnAction ?: return
-        val dataContext = SimpleDataContext.builder()
-            .add(CommonDataKeys.PROJECT, project)
-            .build()
-        val anActionEvent = AnActionEvent(
+        val actionId = when (slot) {
+            1 -> "EditorJumper.ShortcutSlot1Action"
+            2 -> "EditorJumper.ShortcutSlot2Action"
+            3 -> "EditorJumper.ShortcutSlot3Action"
+            else -> return
+        }
+        val action = ActionManager.getInstance().getAction(actionId) ?: return
+        val frame = WindowManager.getInstance().getIdeFrame(project) ?: return
+        ActionManager.getInstance().tryToExecute(
+            action,
             null,
-            dataContext,
+            frame.component,
             ActionPlaces.STATUS_BAR_PLACE,
-            Presentation(),
-            ActionManager.getInstance(),
-            0,
+            true,
         )
-        action.actionPerformed(anActionEvent)
     }
 
     override fun install(statusBar: StatusBar) {
