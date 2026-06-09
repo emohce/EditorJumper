@@ -23,6 +23,14 @@
 
 **无关日志**：`PluginLogo - Cannot load plugin icon ... Not a directory` 来自 Gradle 缓存中 Android 插件 JAR，与 EzEditorJumper 无关。
 
+## 运行时修复：自定义 IDE 无法移除（v2.0.2+）
+
+**现象**：配置面板/Settings 中移除自定义 IDE 后条目仍保留，并因 `shared-apps.json` 共用而在另一端同步出现。
+
+**根因**：`writeApps` 对 `jetbrainsApps` / `vscodeApps` 仅做 merge，删除或全量替换时未覆盖原列表。
+
+**修复**：`removeApp` / `removeCustomVscodeApp` / `replace*Configurations` 写入时使用 replace 模式整表替换目标数组。
+
 ### 测试清单（StackOverflow 修复）
 
 | 场景 | 状态 |

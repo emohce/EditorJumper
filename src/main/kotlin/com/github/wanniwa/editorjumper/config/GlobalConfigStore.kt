@@ -33,9 +33,13 @@ class GlobalConfigStore : Disposable {
         return data
     }
 
-    fun writeApps(patch: SharedAppsConfig): SharedAppsConfig {
+    fun writeApps(
+        patch: SharedAppsConfig,
+        replaceJetbrainsApps: Boolean = false,
+        replaceVscodeApps: Boolean = false,
+    ): SharedAppsConfig {
         val current = readApps(forceReload = true)
-        val merged = mergeApps(current, patch)
+        val merged = mergeApps(current, patch, replaceJetbrainsApps, replaceVscodeApps)
         merged.revision = (current.revision) + 1
         atomicWrite(CachePaths.getSharedAppsFile(), merged)
         cachedApps = merged
@@ -87,7 +91,7 @@ class GlobalConfigStore : Disposable {
         val apps = readApps(forceReload = true)
         if (apps.vscodeApps.none { it.name == name && it.isCustom }) return false
         val list = apps.vscodeApps.filterNot { it.name == name && it.isCustom }.toMutableList()
-        writeApps(SharedAppsConfig(vscodeApps = list))
+        writeApps(SharedAppsConfig(vscodeApps = list), replaceVscodeApps = true)
         return true
     }
 
@@ -212,7 +216,12 @@ class GlobalConfigStore : Disposable {
         return map.values.toMutableList()
     }
 
-    private fun mergeApps(base: SharedAppsConfig, patch: SharedAppsConfig): SharedAppsConfig {
+    private fun mergeApps(
+        base: SharedAppsConfig,
+        patch: SharedAppsConfig,
+        replaceJetbrainsApps: Boolean = false,
+        replaceVscodeApps: Boolean = false,
+    ): SharedAppsConfig {
         val extras = if (patch.jumperExtras.shortcutSlot1.isNotBlank() ||
             patch.jumperExtras.selectedEditorType.isNotBlank()
         ) {
@@ -225,11 +234,21 @@ class GlobalConfigStore : Disposable {
         } else {
             base.jumperExtras
         }
+        val jetbrainsApps = when {
+            replaceJetbrainsApps -> patch.jetbrainsApps
+            patch.jetbrainsApps.isEmpty() -> base.jetbrainsApps
+            else -> mergeAppArrays(base.jetbrainsApps, patch.jetbrainsApps)
+        }
+        val vscodeApps = when {
+            replaceVscodeApps -> patch.vscodeApps
+            patch.vscodeApps.isEmpty() -> base.vscodeApps
+            else -> mergeAppArrays(base.vscodeApps, patch.vscodeApps)
+        }
         return SharedAppsConfig(
             version = 1,
             revision = maxOf(base.revision, patch.revision),
-            jetbrainsApps = if (patch.jetbrainsApps.isEmpty()) base.jetbrainsApps else mergeAppArrays(base.jetbrainsApps, patch.jetbrainsApps),
-            vscodeApps = if (patch.vscodeApps.isEmpty()) base.vscodeApps else mergeAppArrays(base.vscodeApps, patch.vscodeApps),
+            jetbrainsApps = jetbrainsApps,
+            vscodeApps = vscodeApps,
             jumperExtras = extras,
         )
     }
